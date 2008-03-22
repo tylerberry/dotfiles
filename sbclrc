@@ -1,0 +1,17 @@
+;; -*- Lisp -*-
+
+;; KLUDGE: .sbcl-profile can also be loaded from SLIME &co.
+;; The conditionalization below is not sufficent for that, since
+;; Slime pretends to be a TTY - and hence the usage below won't work.
+
+(load (merge-pathnames ".sbcl-profile" (user-homedir-pathname)))
+
+;; Still protect these for shell scripts, etc.
+
+(when (interactive-stream-p *terminal-io*)
+  (ignore-errors
+    (require :sb-aclrepl)
+    (require :linedit))
+
+  (when (find-package :linedit)
+    (funcall (intern "INSTALL-REPL" :linedit) :wrap-current t)))

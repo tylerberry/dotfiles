@@ -1,0 +1,112 @@
+# Begin ~/.muttcolors
+
+# Color and video attribute definitions, not too flashy.
+
+color  normal      white          default
+
+# Red headers.
+
+#color  hdrdefault  red            default
+#color  header      brightred      default  "^(From|Subject):"
+#mono   header      bold                    "^(From|Subject):"
+#color  header      brightmagenta  default  "^X-Spam-Flag: YES"
+#mono   header      bold                    "^X-Spam-Flag: YES"
+#color  header      brightmagenta  default  "^X-Spambayes-Classification: spam.*"
+#mono   header      bold                    "^X-Spambayes-Classification: spam.*"
+
+# Green headers.
+
+color  hdrdefault  green          default
+color  header      brightgreen    default  "^(From|Subject):"
+mono   header      bold                    "^(From|Subject):"
+color  header      brightyellow   default  "^X-Spam-Flag: YES"
+mono   header      bold                    "^X-Spam-Flag: YES"
+color  header      brightyellow   default  "^X-Spambayes-Classification: spam.*"
+mono   header      bold                    "^X-Spambayes-Classification: spam.*"
+
+color  quoted      brightblue     default
+color  quoted1     cyan           default
+color  quoted2     green          default
+color  quoted3     brightblue     default
+color  quoted4     cyan           default
+color  quoted5     green          default
+color  quoted6     brightblue     default
+color  quoted7     cyan           default
+color  quoted8     green          default
+color  quoted9     brightblue     default
+color  signature   blue           default
+
+color  attachment  brightwhite    default
+
+color  status      black          green     # The status bar and help bar.
+
+color  indicator   brightwhite    default
+color  tree        green          default
+color  tilde       magenta        default
+color  markers     black          yellow
+
+color  error       brightred      default
+mono   error       bold
+color  message     green          default
+
+# URLs.
+
+color  body        brightblue     default  "(((ht|f)tp)|news|telnet|finger|mailto|gopher|wais|file)://[^ ]+"
+mono   body        bold                    "(((ht|f)tp)|news|telnet|finger|mailto|gopher|wais|file)://[^ ]+"
+color  body        brightblue     default  "<URL:[^>]+>"
+mono   body        bold                    "<URL:[^>]+>"
+
+# E-mail addresses.
+
+color  body        brightgreen    default  "[-a-z_0-9+.]+@[-a-z_0-9.]+"
+mono   body        bold                    "[-a-z_0-9+.]+@[-a-z_0-9.]+"
+
+# Smileys.
+
+color  body        brightgreen    default  "(^| )[;:ö][-^o]?[)>(|/\\]+"
+
+# Match Unix filenames and paths.
+
+color  body        brightgreen    default  "(^| )[-.[:alnum:]]+:+)~?\(/[-_.'[:alnum:]]+\)+/?"
+
+# *Match* _emphasized_ -words-!!!
+
+color  body        brightred      default  "^[-*_]+[-&*_[:alnum:][:space:]]+[-*_]$"
+color  body        brightred      default  " [-*_]+[-&*_[:alnum:][:space:]]+[-*_]$"
+color  body        brightred      default  "^[-*_]+[-&*_[:alnum:][:space:]]+[-*_] "
+color  body        brightred      default  " [-*_]+[-&*_[:alnum:][:space:]]+[-*_] "
+color  body        red            default  "[!?]{3,}"
+
+# Match bulleted lists.
+
+color  body        green          default  "^ ?*[-+*o] +"
+
+# GnuPG insertion coloring.
+
+color  body        green          default  "Good signature from"
+mono   body        bold                    "Good signature from"
+color  body        brightred      default  "Bad signature from"
+mono   body        reverse                 "Bad signature from"
+color  body        brightred      default  "BAD signature from"
+mono   body        reverse                 "BAD signature from"
+color  body        brightred      default  "Note: This key has expired!"
+mono   body        bold                    "Note: This key has expired!"
+color  body        brightyellow   default  "WARNING: This key is not certified with a trusted signature!"
+color  body        brightyellow   default  "         There is no indication that the signature belongs to the owner."
+color  body        brightyellow   default  "can't handle these multiple signatures"
+color  body        brightyellow   default  "signature verification suppressed"
+color  body        brightyellow   default  "invalid node with packet of type"
+color  body        brightwhite    default  "^gpg: "
+
+# Message type colors.
+
+color  index       yellow         default  ~d>1w  # More than a week old.
+color  index       brightred      default  ~F     # Flagged.
+color  index       brightblue     default  ~T     # Tagged.
+color  index       red            default  ~D     # Deleted.
+color  index       green          default  ~Q     # Replied.
+color  index       brightblue     default  ~g     # GPG Signed.
+color  index       brightmagenta  default  ~F~T   # Flagged and tagged.
+color  index       brightyellow   default  ~N     # New.
+
+# End ~/.muttcolors

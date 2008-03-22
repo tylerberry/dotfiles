@@ -1,0 +1,57 @@
+# Begin ~/.muttrc
+
+source /etc/mutt/Muttrc
+
+# Default list of header fields to weed out.
+
+ignore "from " received content- mime-version status x-status message-id
+ignore sender references return-path lines
+ignore date delivered-to precedence errors-to in-reply-to user-agent
+ignore x-loop x-sender x-mailer x-msmail-priority x-mimeole x-priority
+ignore x-accept-language x-authentication-warning thread- priority
+ignore x-original-to x-subscription x_id x-greylist x-cron-env
+
+# Personal settings.
+
+set move=no
+set tilde
+set sort=threads
+set sort_aux=date
+set copy
+set record=$HOME/.maildir/.sent/
+set postponed=$HOME/.maildir/.drafts/
+set confirmappend=no
+set delete
+set reverse_name
+set mark_old=no
+set charset="utf-8"
+set ascii_chars
+
+set index_format="%4C %Z %{%b %d} %-16.16L (%4c) %s"
+
+# GPG settings.
+
+my_hdr X-PGP-Key: http://tyler.thoughtlocker.net/pgpkey.txt
+set pgp_autosign=yes
+set pgp_sign_as=5D9AC138
+set pgp_replyencrypt=yes
+set pgp_timeout=3600
+set pgp_verify_sig=yes
+
+# S/MIME hooks.
+
+#source ~/.mutt/smime.rc
+
+# Some people actually like these settings.
+
+#set pager_stop
+#bind pager <up> previous-line
+#bind pager <down> next-line
+
+source ~/.muttcolors
+
+# Local setup.
+
+source ~/.muttrc-local
+
+# End ~/.muttrc

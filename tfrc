@@ -1,0 +1,288 @@
+/loadworld
+/load ~/.tfrc-worlds
+
+/set warn_5keys=off
+/bamf old
+/quitdone on
+/isize 4
+/visual on
+/set interactive off
+/set wraplog on
+/wrapspace 5
+
+/load spell.tf
+/load watch.tf
+/load world-q.tf
+
+;;; a /clear command.
+
+/def clear = /dokey clear
+
+;;; Cajun property editing
+
+/set edmarker FugueEdit
+/eval /def -p100 -ag -t'%{edmarker} > *' edtrig = /grab %%-2
+
+/def ed = \
+        /if (regmatch('/',{*})) \
+                /let edobj %PL %; \
+                /let edattr %PR %; \
+                /def -n1 -t#* -q -ag tempedtrig = \
+                        @pemit me = switch(%%*, \
+                        #-1, I don't see that here., \
+                        #-2, I don't know which one you mean!, \
+                        %{edmarker} > &%{edattr} %{edobj} = \
+                        [get(%%*/%{edattr})]) %; \
+                /send @pemit me = locate(me, %{edobj}, *) %; \
+        /else /echo %% %{edmarker}: ed argument must be of form <obj>/<attr> %;
+        \
+        /endif
+/def -h"send ed *" edhook = /ed %-1
+
+/def ng = \
+        /if (regmatch('/',{*})) \
+                /echo %% %{edmarker}: ng argument must be a valid object name
+        %; \
+        /else \
+                /def -n1 -t#* -q -ag tempngtrig = \
+                        @pemit me = switch(%%*, \
+                        #-1, I don't see that here., \
+                        #-2, I don't know which one you mean!, \
+                        %{edmarker} > @name %* = [translate(fullname(%%*))]) %;
+        \
+                /send @pemit me = locate(me, %*, *) %; \
+        /endif
+/def -h"send ng *" nghook = /ng %-1
+
+/def lock = \
+        /if (regmatch('/',{*})) \
+                /let edobj %PL %; \
+                /let edattr %PR %; \
+                /def -n1 -t#* -q -ag templocktrig = \
+                        @pemit me = switch(%%*, \
+                        #-1, I don't see that here., \
+                        #-2, I don't know which one you mean!, \
+                        %{edmarker} > @lock/%{edattr} %{edobj} = \
+                        [lock(%%*/%{edattr})]) %; \
+                /send @pemit me = locate(me, %{edobj}, *) %; \
+        /else \
+                /def -n1 -t#* -q -ag templocktrig = \
+                        @pemit me = switch(%%*, \
+                        #-1, I don't see that here., \
+                        #-2, I don't know which one you mean!, \
+                        %{edmarker} > @lock %* = [lock(%%*)]) %; \
+                /send @pemit me = locate(me, %*, *) %; \
+        /endif
+/def -h"send lock *" lockhook = /lock %-1
+
+/def edhelp = \
+        /echo -p @{h}ed <obj>/<attr>:@{n} \
+                edits the given attribute on the given object. %; \
+        /echo -p @{h}ng <obj>:@{n} \
+                grabs the name of the given object for editing. %; \
+        /echo -p @{h}lock <obj>[/<type>]:@{n} \
+                edits the given lock (default lock if no type given).
+)
+
+;;; Autologging
+
+/def -i LOGDIR=/home/loki/.tflogs
+/def -i -F -h'connect' hook_connect_log = \
+/log -g ${LOGDIR}/${world_name}/$[ftime("%Y-%m-%d.log", time())]
+
+;;; Idler
+
+/set idlermin=5
+/set idlermax=20
+/set _pid_idler=0
+/set _idle_for=0
+/set next_idle=0
+
+/def -i idler_action=@pemit me=
+
+/set default_idle_message=I am idle. If I don't respond to pages, please send \
+me a +mail.
+/set work_idle_message=I'm at work, so I'm prone to idle for very long \
+periods of time. If I don't respond to pages, please send me a +mail.
+/set staff_idle_message=I am idle, if I don't respond to pages, please send \
+me a +mail or submit your request to the appropriate +queue.
+
+/def -i idletime = \
+    /if (next_idle) \
+        /@test seconds_left := next_idle - $(/time @)%;\
+        /eval /echo %%% $[trunc(seconds_left / 60)]:$[mod(seconds_left,60)] left%;\
+    /else \
+        /echo -e %% Idler not enabled%;\
+    /endif
+
+/def -i _idleroff = \
+    /@test next_idle & (next_idle := 0) %;\
+    /@test _pid_idler & (kill(_pid_idler), _pid_idler:=0) %;\
+
+
+/def -i _idler = \
+    /_idleroff%;\
+    /@test _idle_for := $[rand(idlermin,idlermax)] * 60 %;\
+    /@test next_idle := $(/time @) + _idle_for %;\
+    /repeat -%_idle_for 1 \
+        /idler_action%%;\
+        /_idler%;\
+    /set _pid_idler=%?
+
+/def -i idleon = \
+    /if (next_idle) \
+        /echo -e %%% Idler already enabled%;\
+    /else \
+        /echo -e %%% Idler On%;\
+        /if (strlen({*})) \
+            /eval @idle me=%{*}%;\
+        /else \
+            /eval @idle me=%{default_idle_message}%;\
+        /endif%;\
+        /_idler%;\
+    /endif
+
+/def -i idleoff = \
+    /if (next_idle) \
+        /_idleroff%;\
+        /eval @idle me=%;\
+        /echo -e %%% Idler Off%;\
+    /else \
+        /echo -e %%% Idler not enabled%;\
+    /endif
+
+/def -i idlework = /idleon %{work_idle_message}
+/def -i idlestaff = /idleon %{staff_idle_message}
+
+;;; Make pages, multipages, and whispers stand out
+;;;
+;;; Gwen: I like to make my pages/multipages/whispers that I send out hilighted
+;;; also, not just the ones people send to me. To discriminate between them,
+;;; I use the non-bold form of the color I use for the incoming communication
+;;; of the same type. This mostly helps me visually seperate any remote
+;;; conversation from action in my location.
+
+; Bold cyan color pages
+/def -i -p2 -aBCcyan -t'* pages[,:] *' hl_page1
+/def -i -p4 -aBCcyan -t'You sense that * is looking for you in *' hl_page2
+/def -i -p4 -aBCcyan -t'From afar, *' hl_page3
+/def -i -p2 -aCcyan -t'Long distance to *' hl_page4
+/def -i -p2 -aCcyan -t'You paged *' hl_page5
+
+; Bold green multi-pages
+/def -i -p3 -aBCgreen -t'* pages (*) *' hl_mpage1
+/def -i -p5 -aBCgreen -mregexp -t"(multipages|multi-pages)" hl_mpage2
+/def -i -p5 -aCgreen -mregexp -t"(multipage|multi-page)" hl_mpage3
+/def -i -p6 -aBCgreen -t'(To: *) *' hl_mpage4
+/def -i -p7 -aBCgreen -t'(To: *) Long Distance, *' hl_mpage5
+/def -i -p7 -aCgreen -t'(To: *) * pages: *' hl_mpage6
+/def -i -p3 -aBCgreen -t'You paged * and * with *' hl_mpage7
+/def -i -p3 -aBCgreen -t'Long distance to * and *: *' hl_mpage8
+/def -i -p7 -aCgreen -t'(To: *) From afar, *' hl_mpage9
+/def -i -p7 -aBCgreen -t'(To: *) You page: *' hl_mpage4
+
+; Bold blue color whispers
+/def -i -p2 -aBCblue -t'* whispers *' hl_whisper1
+/def -i -p3 -aBCblue -t'You sense *' hl_whisper2
+
+;;; Full-line highlights (odds and ends)
+
+; When someone triggers a character @adesc (bold magenta)
+/def -i -p5 -aBCmagenta -t'* looked at *.' hl_adesc
+/def -i -p5 -aBCmagenta -t'* is looking at *.' hl_adesc2
+
+; Hilite activity in bg worlds
+/def -i -p2 -F -hACTIVITY -aBCwhite hl_activity
+
+; <OOC> Code
+/def -i -p4 -aBCred -t'<OOC> *' hl_ooc
+/def -i -p6 -mregexp -abCgreen -t'^OOC:' hl_ooc2
+
+; +watch code
+/def -i -p5 -aBCgreen -t'<Watch> *' hl_watch
+
+; MUX `game' messages
+/def -i -p5 -F -aBCgreen -t'GAME:*' hl_mux_game
+
+; +finger pemits
+/def -i -p5 -F -aBCgreen -t'* +fingered you.' hl_finger
+
+; Announcements
+/def -i -p15 -mregexp -aBCgreen -t'Announce' hl_announcement
+
+;;; "Partial" highlights of importance
+
+; Warnings
+/def -i -p3 -F -P1xBCred -t'(ALERT>)' par_alert
+/def -i -p1 -P0BCred -F -t'^[^ ]+ >>' night_chan
+
+; Table-talk conversation partially in white
+/def -i -p7 -P0xBCwhite -t'^(At|In) (your|the) [^,:]*[,:]' par_place1
+
+;;; IDE Highlighting I'm sure most of you have worked on a IDE that uses syntax
+;;; highlighting if you're into any sort of coding at all, you all know how
+;;; useful it can be. Of course, MUSHes didn't have that -- till now. If you
+;;; paste the following into your .tfrc (for tinyfugue users; others probably
+;;; will have to modify this code) and then do line joins if necessary, you'll
+;;; get some form of syntax highlighting.
+;;; Author: Kamikaze: http://www.imsa.edu/~kamikaze/
+
+/def -i -p10 hilight_cmd = /def -i -PBCwhite -F -t"%1"
+/def -i -p10 hilight_cmd2 = /def -i -PBCwhite -F -t"%1"
+/def -i -p10 hilight_cmd3 = /def -i -PBCwhite -F -t"%1"
+/def -i -p10 hilight_cmd4 = /def -i -PBCwhite -F -t"%1"
+;/def -i -p10 -F -PBCyellow -t'(\{|\})'
+;/def -i -p10 -F -PBCred -t'(\[|\])'
+;/def -i -p10 -F -PBCgreen -t'(\(|\))'
+/def -i -p10 -F -PBCblue -t'(=|;|/|\%0|\%1|\%2|\%3|\%4|\%5|\%6|\%7|\%8|\%9|\%#|\%@|\%N)'
+/def -i -p10 -F -PBCmagenta -t'(\%r|\%b|\%t|\%s|\%p|\%o|\%!|\%l)'
+/def -i -p10 -F -PBCcyan -t'(\%q0|\%q1|\%q2|\%q3|\%q4|\%q5|\%q6|\%q7|\%q8|\%q9|\%Q0|\%Q1|\%Q2|\%Q3|\%Q4|\%Q5|\%Q6|\%Q7|\%Q8|\%Q9)'
+/def -i -p10 -F -PBCmagenta -t'(,)'
+/hilight_cmd (@@|@allhalt|@allquota|@atrchown|@atrlock|@attribute|@boot|@cemit|@channel|@chat|@chown)
+/hilight_cmd (@chownall|@chzone|@chzoneall|@clock|@clone|@command|@config|@cpattr|@create|@dbck)
+/hilight_cmd (@decompile|@destroy|@dig|@disable|@doing|@dolist|@drain|@dump|@edit|@elock|@emit|@enable)
+/hilight_cmd (@entrances|@eunlock|@find|@firstexit|@fixdb|@force|@function|@gedit|@grep|@halt|@hide|@kick)
+/hilight_cmd2 (@link|@listmotd|@list|@lock|@log|@mail|@map|@motd|@mvattr|@name|@newpassword|@notify|@nuke)
+/hilight_cmd2 (@oemit|@open|@parent|@password|@pcreate|@pemit/list|@pemit|@poll|@poor|@power|@ps|@purge|@quota)
+/hilight_cmd2 (@recycle|@rejectmotd|@remit|@restart|@rwall|@rwallemit|@rwallpose|@scan|@search|@select)
+/hilight_cmd3 (@shutdown|@sitelock|@squota|@stats|@sweep|@switch|@tel|@teleport|@toad|@trigger|@ulock|@unlock)
+/hilight_cmd3 (@undestroy|@unlink|@unlock|@unrecycle|@uptime|@uunlock|@verb|@version|@wait|@wall|@wallemit)
+/hilight_cmd3 (@wallpose|@warnings|@wcheck|@wipe|@wizemit|@wizmotd|@wizpose|@wizwall|@zemit|@desc|@dol)
+/hilight_cmd4 (@sel|@fo|@no|@listen|@lemit|@femit|@fpose|@fsay|@mudwho|@alias|@last|@robot|@readcache)
+/hilight_cmd4 (@setq|@set)
+
+; Hilite various Tiny-MUSH specific settings (dbrefs, flags, @'s, etc)
+; written by Andrew Mortimer
+
+/def -i -p1 -P0BCred -mregexp -F -t'#[0-9]+' tiny_dbrefnum
+/def -i -p1 -P0BCred -mregexp -F -t'#-1' tiny_dbreferr
+/def -i -p1 -P1BCred -mregexp -F -t'#[0-9]+([A-Za-z\$+&@]+( \[[^]]+\])?)' tiny_dbrefflag
+/def -i -p1 -P0Cwhite -mregexp -F -t'@[A-Za-z_]+' tiny_atcomm
+/def -i -p1 -P1Cwhite -mregexp -F -t'^([ ]*[^;()# ]+)(\\(#[0-9]+\\))?:.*' tiny_heads
+
+/def -P0BCgreen -F -t'-'
+/def -P0BCgreen -F -t'='
+/def -P0BCgreen -F -t'{'
+/def -P0BCgreen -F -t'}'
+/def -P0BCgreen -F -t'/'
+/def -P0BCgreen -F -t'\:'
+/def -P0BCgreen -F -t'\|'
+/def -P0BCgreen -F -t'\/'
+/def -P0BCgreen -F -t'\('
+/def -P0BCgreen -F -t'\)'
+/def -P0BCgreen -F -t'\;'
+/def -P0BCgreen -F -t'\:'
+/def -P0BCgreen -F -t'\''
+/def -P0BCgreen -F -t'\!'
+/def -P0BCgreen -F -t'\^'
+/def -P0BCgreen -F -t'\"'
+/def -P0BCgreen -F -t'\!'
+/def -P0BCgreen -F -t'\<'
+/def -P0BCgreen -F -t'\>'
+/def -P0BCgreen -F -t'\+'
+/def -P0BCgreen -F -t'~'
+/def -P0BCgreen -F -t'_'
+/def -P0BCgreen -F -t'\\*'
+/def -P0BCgreen -F -t'`'
+/def -P0BCgreen -F -t','
+/def -P0BCgreen -F -t'\?'

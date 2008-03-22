@@ -1,0 +1,14 @@
+# Begin ~/.inputrc
+
+# Turn off 8-bit stripping.
+set convert-meta Off
+
+# Prefer no bell by default.
+set bell-style none
+
+# Keybindings for movement by word.
+
+"\e[5D": backward-word
+"\e[5C": forward-word
+
+# End ~/.inputrc

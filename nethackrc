@@ -1,0 +1,129 @@
+# Begin ~/.nethackrc                                                 -*- Sh -*-
+
+OPTIONS=catname:Pixel
+OPTIONS=dogname:Dylan
+OPTIONS=horsename:Haskell
+OPTIONS=fruit:pomegranate
+OPTIONS=pettype:cat
+
+OPTIONS=DECgraphics
+OPTIONS=pushweapon,autodig,autopickup,autoquiver
+OPTIONS=pickup_types:$
+
+OPTIONS=showexp,showscore,time
+
+OPTIONS=color,number_pad
+
+# These are from Jukka's patch.
+
+OPTIONS=menucolors,like_swimming,showborn
+OPTIONS=paranoid_quit,paranoid_remove
+OPTIONS=sortloot:loot
+OPTIONS=dumpfile:/home/loki/.nethack.dump
+
+# Start out by highlighting items that have been identified, as per
+# enchantment.
+
+MENUCOLOR="([0-9]+:.*"=brown
+MENUCOLOR="[+-][0-9]+ "=brown
+
+# Get the color on items that explicitly have B/C/U status showing.
+
+MENUCOLOR=" uncursed "=brown
+MENUCOLOR=" blessed "=cyan
+MENUCOLOR=" holy "=cyan
+MENUCOLOR=" cursed "=red
+MENUCOLOR=" unholy "=red
+
+# Tag items that I have attached to me.
+
+MENUCOLOR=" (weapon in .*)"=yellow
+MENUCOLOR=" (wielded.*)"=yellow
+MENUCOLOR=" (alternate weapon.*)"=yellow
+MENUCOLOR=" (in quiver)"=yellow
+MENUCOLOR=" (being worn)"=yellow
+MENUCOLOR=" (embedded in your skin)"=yellow
+MENUCOLOR=" (on left .*)"=yellow
+MENUCOLOR=" (on right .*)"=yellow
+MENUCOLOR=" (in use)"=yellow
+
+# Tag blessed items that are somehow attached to me.
+
+MENUCOLOR=" blessed .* (weapon in .*)"=lightcyan
+MENUCOLOR=" blessed .* (wielded.*)"=lightcyan
+MENUCOLOR=" blessed .* (alternate weapon.*)"=lightcyan
+MENUCOLOR=" blessed .* (in quiver)"=lightcyan
+MENUCOLOR=" blessed .* (being worn)"=lightcyan
+MENUCOLOR=" blessed .* (embedded in your skin)"=lightcyan
+MENUCOLOR=" blessed .* (on left .*)"=lightcyan
+MENUCOLOR=" blessed .* (on right .*)"=lightcyan
+MENUCOLOR=" blessed .* (in use)"=lightcyan
+
+# Tag cursed items that are somehow attached to me.
+
+MENUCOLOR=" cursed .* (weapon in .*)"=orange&underline
+MENUCOLOR=" cursed .* (wielded.*)"=orange&underline
+MENUCOLOR=" cursed .* (alternate weapon.*)"=orange&underline
+MENUCOLOR=" cursed .* (in quiver)"=orange&underline
+MENUCOLOR=" cursed .* (being worn)"=orange&underline
+MENUCOLOR=" cursed .* (embedded in your skin)"=orange&underline
+MENUCOLOR=" cursed .* (on left .*)"=orange&underline
+MENUCOLOR=" cursed .* (on right .*)"=orange&underline
+MENUCOLOR=" cursed .* (in use)"=orange&underline
+
+# Tag the invocation items.
+
+MENUCOLOR=" silver bell"=white
+MENUCOLOR=" Bell of Opening"=white
+MENUCOLOR=" candelabrum"=white
+MENUCOLOR=" Candelabrum of Invocation"=white
+MENUCOLOR=" papyrus spellbook"=white
+MENUCOLOR=" Book of the Dead"=white
+MENUCOLOR=" Amulet of Yendor"=white
+
+# Tag any cursed invocation items.
+
+MENUCOLOR=" cursed silver bell"=orange&underline
+MENUCOLOR=" cursed Bell of Opening"=orange&underline
+MENUCOLOR=" cursed candelabrum"=orange&underline
+MENUCOLOR=" cursed Candelabrum of Invocation"=orange&underline
+MENUCOLOR=" cursed papyrus spellbook"=orange&underline
+MENUCOLOR=" cursed Book of the Dead"=orange&underline
+MENUCOLOR="the cursed Amulet of Yendor"=orange&underline
+
+MENUCOLOR="cheap plastic imitation"=brown
+MENUCOLOR="cursed cheap"=red
+MENUCOLOR="blessed cheap"=cyan
+
+# Tag items that can potentially blow up.
+
+MENUCOLOR="wand of cancellation"=lightmagenta&underline
+MENUCOLOR="cancel"=lightmagenta&underline
+MENUCOLOR="vanish"=lightmagenta&underline
+MENUCOLOR="bag$"=lightmagenta&underline
+MENUCOLOR="bag of tricks"=lightmagenta&underline
+MENUCOLOR="bag of holding"=lightmagenta&underline
+
+MENUCOLOR="wand of cancellation.*0:0"=brown
+MENUCOLOR="cursed wand of cancellation.*0:0"=red
+MENUCOLOR="blessed wand of cancellation.*0:0"=cyan
+
+MENUCOLOR="bag of tricks.*0:0"=brown
+MENUCOLOR="cursed bag of tricks.*0:0"=red
+MENUCOLOR="blessed bag of tricks.*0:0"=cyan
+
+# Tag spells by failure chance.
+
+MENUCOLOR=" 0%"=lightcyan
+MENUCOLOR=" [1-9]%"=lightgreen
+MENUCOLOR=" 1[0-9]%"=green
+MENUCOLOR=" 2[0-4]%"=green
+MENUCOLOR=" 2[5-9]%"=brown
+MENUCOLOR=" [34][0-9]%"=brown
+MENUCOLOR=" [56][0-9]%"=red
+MENUCOLOR=" 7[0-4]%"=red
+MENUCOLOR=" 7[5-9]%"=orange
+MENUCOLOR=" [89][0-9]%"=orange
+MENUCOLOR=" 100%"=orange&underline
+
+# End ~/.nethackrc
