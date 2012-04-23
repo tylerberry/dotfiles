@@ -13,6 +13,7 @@ ignore x-original-to x-subscription x_id x-greylist x-cron-env
 
 # Personal settings.
 
+set realname="Tyler Berry"
 set move=no
 set tilde
 set sort=threads

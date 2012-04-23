@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003, 2004, 2005, 2006, 2007 Tyler Berry
 ;; Author: Tyler Berry <tyler@thoughtlocker.net>
 ;; Keywords: local
-;; Time-stamp: <2007-11-23 06:48:35 tyler>
+;; Time-stamp: <2009-08-29 14:24:42 tyler>
 
 ;; This file is free software; you can redistribute it and/or modify it under
 ;; the terms of version 2 of the GNU General Public License as published by the
@@ -724,6 +724,15 @@ window."
       (untabify (1- (point)) (point-max))))
   nil)
 (defalias 'untabify-buffer 'jwz-untabify-buffer)
+
+;; A function to indent the current buffer.
+
+(defun tyler-indent-buffer ()
+  "Indent the curent buffer."
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+(defalias 'indent-buffer 'tyler-indent-buffer)
 
 ;; Automatically execute this on certain types of source code.
 

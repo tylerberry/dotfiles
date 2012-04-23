@@ -1,0 +1,9 @@
+  hardstatus off
+  escape ^Zz
+
+# caption always "%{=}%{kR}%H%{kW} | %{kB}%n*%f %t%{kW} | %?%L=%-Lw%?%35>%{kB}%n*%f %t%?(%u)%?%{-}%?%+Lw%-0<%?%-15= | %{kY}%M %d %{kG}%0c"
+
+  caption always "%{=}%{kR}%H %{kY}%M %d %{kG}%0c%{kW} | %{kB}%n*%f %t%{kW} | %?%L=%-Lw%?%45>%{kB}%n*%f %t%?(%u)%?%{-}%?%+Lw%-0<%?"
+
+  screen -t EMACS 0 emacs
+  screen -t zsh 0 zsh

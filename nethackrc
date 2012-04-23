@@ -19,7 +19,7 @@ OPTIONS=color,number_pad
 OPTIONS=menucolors,like_swimming,showborn
 OPTIONS=paranoid_quit,paranoid_remove
 OPTIONS=sortloot:loot
-OPTIONS=dumpfile:/home/loki/.nethack.dump
+OPTIONS=dumpfile:/home/tyler/.nethack.dump
 
 # Start out by highlighting items that have been identified, as per
 # enchantment.
