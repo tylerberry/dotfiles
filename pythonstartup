@@ -1,0 +1,52 @@
+# Begin ~/.python.py
+
+# Use interactive prompt and debugging, as well as command history. Also, use
+# colored prompts.
+
+import os, sys
+
+try:
+  import readline
+except ImportError:
+  sys.ps1 = '\033[0;32m>>> \033[0m'
+  sys.ps2 = '\033[0;32m... \033[0m'
+
+  print ("Module 'readline' not available.")
+else:
+  sys.ps1 = '\001\033[0;32m\002>>> \001\033[0m\002'
+  sys.ps2 = '\001\033[0;32m\002... \001\033[0m\002'
+
+  # This section sets up tab-completion.
+
+  try:
+    import rlcompleter2
+    rlcompleter2.setup ()
+    del rlcompleter2
+  except ImportError:
+    try:
+      import rlcompleter
+      readline.parse_and_bind ("tab: complete")
+      del rlcompleter
+    except ImportError:
+      print ("Module 'rlcompleter' not available.")
+
+  # This section sets up command history.
+
+  try:
+    import atexit
+  except ImportError:
+    print ("Module 'atexit' not available.")
+  else:
+    history_file = os.path.expanduser ('~/.pythonhistory')
+    try:
+      readline.read_history_file (history_file)
+    except IOError: pass
+
+    atexit.register (readline.write_history_file, history_file)
+    del history_file, atexit
+
+  del readline
+
+del os, sys
+
+# End ~/.pythonrc.py

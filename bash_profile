@@ -5,14 +5,14 @@
 # First of all, source my .bashrc.
 
 if [ -f "$HOME/.bashrc" ] ; then
-    source $HOME/.bashrc
+  source $HOME/.bashrc
 fi
 
 # Set MANPATH so it includes my private manpage directory if it exists.
 
 if [ -d "$HOME/man" ]; then
-    MANPATH=$HOME/man:$MANPATH
-    export MANPATH
+  MANPATH=$HOME/man:$MANPATH
+  export MANPATH
 fi
 
 # Bash customizations.
@@ -48,8 +48,8 @@ export LANG LC_COLLATE LC_TIME LESSCHARSET TZ
 
 # Set up the Python interpreter.
 
-if [[ -f "$HOME/.python.py" ]] ; then
-    export PYTHONSTARTUP=$HOME/.python.py
+if [[ -f "$HOME/.pythonstartup" ]] ; then
+  export PYTHONSTARTUP=$HOME/.pythonstartup
 fi
 
 # Use ssh rather than the insecure rsh to connect to CVS servers.  Why isn't
@@ -60,7 +60,7 @@ export CVS_RSH=ssh
 # Run site-local bash configuration.
 
 if [ -f "$HOME/.bash_local" ] ; then
-    source $HOME/.bash_local
+  source $HOME/.bash_local
 fi
 
 # End ~/.bash_profile
