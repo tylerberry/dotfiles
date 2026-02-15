@@ -181,8 +181,12 @@ export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 # Vim and Neovim.
 
 if hash vim 2>/dev/null; then
-  [ $(vim --clean -es +'exec "!echo" has("patch-9.1.0327")' +q) -eq 0 ] && \
-    export VIMINIT="set nocp | source ${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
+  vimrc_path="${XDG_CONFIG_HOME:-${HOME}/.config}/vim/vimrc"
+
+  if [ -f "${vimrc_path}" ] && \
+     [ "$(vim --clean -es +'exec "!echo" has("patch-9.1.0327")' +q)" -eq 0 ]; then
+    export VIMINIT="set nocp | source ${vimrc_path}"
+  fi
 fi
 
 # wget.
