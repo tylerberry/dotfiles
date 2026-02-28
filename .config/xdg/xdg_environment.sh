@@ -148,8 +148,8 @@ export K9SCONFIG="${XDG_CONFIG_HOME}/k9s"
 
 # Kubernetes
 
-export KUBECONFIG="${XDG_CONFIG_HOME}/kube"
-export KUBECACHEDIR="${XDG_CACHE_HOME}/kube"
+export KUBECONFIG="${XDG_CONFIG_HOME}/kube/config"
+export KUBECACHEDIR="${XDG_CACHE_HOME}/kube/cache"
 
 # less, the pager with more.
 #
