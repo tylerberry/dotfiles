@@ -1,8 +1,6 @@
+zmodule completion
+zmodule romkatv/powerlevel10k --use degit
 zmodule ssh
-
 zmodule olets/zsh-abbr --use git
-
-zmodule romkatv/powerlevel10k
-
 zmodule zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-autosuggestions
