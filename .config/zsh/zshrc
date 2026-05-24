@@ -74,7 +74,7 @@ if [[ -n $WSL_DISTRO_NAME ]]; then
     for exe in "$dir"/*.exe(N); do
       [[ -x "$exe" ]] || continue
       base=${exe:t:r}
-      commands[$base]="$exe"
+      [[ -z $commands[$base] ]] && commands[$base]="$exe"
     done
   done
 fi
