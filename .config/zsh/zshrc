@@ -87,3 +87,6 @@ setopt HASH_EXECUTABLES_ONLY
 # Keep your extension ignores (unchanged)
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns \
   '*.(dll|DLL|sys|$SYS|drv|DRV|mof|MOF|efi|EFI|ini|INI|vbs|VBS|mui|MUI|tlb|TLB|ttc|TTC|ttf|TTF|ico|ICO|cpl|CPL|scr|SCR|acm|ACM|ax|AX|ocx|OCX|inf|INF|cat|CAT|manifest|MANIFEST|pdb|PDB|exp|EXP|ilk|ILK|obj|OBJ|nls|NLS)'
+
+# Load machine-local zshrc.
+[[ -f ~/.config/zsh/zshrc.local ]] && source ~/.config/zsh/zshrc.local
