@@ -49,7 +49,7 @@ source ${ZIM_HOME}/init.zsh
 
 alias ls='ls --color=auto'
 alias dotfiles='git --git-dir="${XDG_DATA_HOME}/dotfiles" --work-tree="${HOME}"'
-compdef dotfiles=git
+compdef _git dotfiles=git
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
