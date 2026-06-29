@@ -6,6 +6,44 @@
 " MacOS user database for the real user's username and home directory and
 " corrects things if broken.
 
+if has('macunix')
+  " Get the current user's UID
+  let s:user_uid = substitute(system('id -u'), '\n$', '', '')
+
+  " Get the correct username
+  let s:user_name = substitute(system('/usr/bin/dscl . -search /Users UniqueID ' . s:user_uid . ' | /usr/bin/awk ''NR==1{print $1}'''), '\n$', '', '')
+
+  " Get the correct home directory for the user
+  let s:correct_home = substitute(system('/usr/bin/dscl . -read /Users/' . s:user_name . ' NFSHomeDirectory | /usr/bin/awk ''{print $2}'''), '\n$', '', '')
+
+  if s:correct_home != $HOME
+    " Correct the environment variables
+    let $HOME = s:correct_home
+    let $USER = s:user_name
+
+    " Check default paths for vim config and source the first one that exists.
+    let s:config_paths = [
+        \ s:correct_home . '/.vimrc',
+        \ s:correct_home . '/.vim/vimrc',
+        \ s:correct_home . '/.config/vim/vimrc'
+        \ ]
+
+    for s:config_path in s:config_paths
+      if filereadable(s:config_path)
+        echom "WARNING: Mismatched environment detected. Loading correct user configuration file: " . s:config_path
+        execute 'source ' . s:config_path
+        finish
+      endif
+    endfor
+
+    " If no config file was found, print a warning and stop execution
+    echom "WARNING: Mismatched environment detected. No valid configuration file found in correct home directory. Stopping .vimrc execution."
+    finish
+  endif
+endif
+
+" If it failed to get set correctly, set the $MYVIMRC variable.
+
 if empty($MYVIMRC) | let $MYVIMRC = expand('<sfile>:p') | endif
 
 " XDG Base Directory support
@@ -34,7 +72,7 @@ let g:netrw_home = $XDG_DATA_HOME . "/vim"
 call mkdir($XDG_DATA_HOME . "/vim/spell", 'p', 0700)
 call mkdir($XDG_STATE_HOME . "/vim", 'p', 0700)
 
-" Quick and dirty vimrc, organize and edit later
+" Quick and dirty vimrc, organize and add comments later
 
 set nocompatible
 
@@ -44,14 +82,33 @@ syntax enable
 set hlsearch
 set incsearch
 set ignorecase
+set smartcase
+
+set number
+set relativenumber
+set laststatus=2
+set ruler
+
+set wildmenu
+set wildmode=longest:full,full
+
+set scrolloff=3
+set sidescrolloff=5
+
+set splitbelow
+set splitright
+
+set confirm
+set hidden
 
 set smartindent
 set autoindent
 set expandtab
 set tabstop=2
 set shiftwidth=2
-
 set textwidth=79
-set ruler
+
+set mouse=a
+set ttymouse=sgr
 
 " End ~/.config/vim/vimrc
