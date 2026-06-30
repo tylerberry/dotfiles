@@ -1,0 +1,6 @@
+[user]
+  name = Tyler Berry
+	email = tyler@3james.com
+
+[include]
+  path = ~/.config/git/config.local
