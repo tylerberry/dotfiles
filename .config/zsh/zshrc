@@ -11,10 +11,14 @@ if [[ -r "${XDG_CONFIG_HOME}/iterm2/shell_integration.zsh" ]]; then
 fi
 
 # Store history in the correct XDG location.
-HISTFILE="${XDG_STATE_HOME}/zsh/history"
+
 if [[ ! -d "${XDG_STATE_HOME}/zsh" ]]; then
   mkdir "${XDG_STATE_HOME}/zsh"
 fi
+
+HISTFILE="${XDG_STATE_HOME}/zsh/history"
+HISTSIZE=100000
+SAVEHIST=100000
 
 # Keep zsh-abbr state files locally.
 
