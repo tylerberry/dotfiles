@@ -115,7 +115,7 @@ export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME}/aws/credentials"
 
 export CARGO_HOME="${XDG_RUNTIME_DIR}/cargo-home"
 
-if [ ! -e "${CARGO_HOME}" ] && hash cargo 2>/dev/null; then
+if [ ! -e "${CARGO_HOME}" ] && command -v cargo >/dev/null 2>&1; then
   mkdir -p "${CARGO_HOME}"
   mkdir -p "${XDG_CONFIG_HOME}/cargo"
   
@@ -162,6 +162,10 @@ if [ ! -d "${XDG_STATE_HOME}/less" ]; then
   mkdir "${XDG_STATE_HOME}/less"
 fi
 
+# Nethack.
+
+export NETHACKOPTIONS="@${XDG_CONFIG_HOME}/nethack/nethackrc"
+
 # Node package manager.
 
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
@@ -178,20 +182,26 @@ export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonstartup.py"
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 
-# Vim and Neovim.
+# Vim.
 
-if hash vim 2>/dev/null; then
+if command -v vim >/dev/null 2>&1; then
   vimrc_path="${XDG_CONFIG_HOME:-${HOME}/.config}/vim/vimrc"
 
-  if [ -f "${vimrc_path}" ] && \
+  if [ -f "${vimrc_path}" ] &&
      [ "$(vim --clean -es +'exec "!echo" has("patch-9.1.0327")' +q)" -eq 0 ]; then
-    export VIMINIT="set nocp | source ${vimrc_path}"
+    vim()
+    {
+      VIMINIT='set nocp | execute "source " . fnameescape($XDG_CONFIG_HOME . "/vim/vimrc")' \
+        command vim "$@"
+    }
   fi
+
+  unset vimrc_path
 fi
 
 # wget.
 
-if hash wget 2>/dev/null; then
+if command -v wget >/dev/null 2>&1; then
   if [ ! -r "${XDG_CONFIG_HOME}/wget/wgetrc" ]; then
     mkdir -p "${XDG_CONFIG_HOME}/wget"
     touch "${XDG_CONFIG_HOME}/wget/wgetrc"
