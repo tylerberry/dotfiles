@@ -48,6 +48,11 @@ fi
 
 source ${ZIM_HOME}/init.zsh
 
+# Source a customized version of Zim's ssh module.
+
+zstyle ':zim:ssh' agent_file "${XDG_STATE_HOME}/zsh/ssh-agent"
+source ${ZDOTDIR}/zim-ssh-agent.zsh
+
 # Aliases.
 
 alias ls='ls --color=auto'
