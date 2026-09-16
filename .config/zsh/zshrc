@@ -1,13 +1,11 @@
+# Begin ~/.config/zsh/zshrc
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 
 if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-if [[ -r "${XDG_CONFIG_HOME}/iterm2/shell_integration.zsh" ]]; then
-  source "${XDG_CONFIG_HOME}/iterm2/shell_integration.zsh"
 fi
 
 # Store history in the correct XDG location.
@@ -47,6 +45,7 @@ if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} 
 fi
 
 # Initialize Zim and modules.
+
 source ${ZIM_HOME}/init.zsh
 
 # Aliases.
@@ -78,18 +77,49 @@ esac
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
-# Initialize nvm on Mac OS X if installed.
-
-[[ -r /opt/local/share/nvm/init-nvm.sh ]] && source /opt/local/share/nvm/init-nvm.sh
-
 # Load WSL-specific tweaks.
 
 if [[ -n "$WSL_DISTRO_NAME" && -f ~/.config/wsl/wsl-convenience.zsh ]]; then
   source ~/.config/wsl/wsl-convenience.zsh
 fi
 
-# ????????
-#. "/private/var/folders/6j/fd70xl4157z4_150rf9rtmqr0000gn/T/xdg/cargo-home/env"
+# Ensure iTerm2 utilities are present.
+
+if [[ "$LC_TERMINAL" == "iTerm2" || "$TERM_PROGRAM" == "iTerm.app" ]]; then
+  local checkout="${XDG_DATA_HOME:-$HOME/.local/share}/iterm2-shell-integration"
+  local bin_target="${XDG_BIN_HOME:-$HOME/.local/bin}/iterm2"
+  local stamp="${XDG_STATE_HOME:-$HOME/.local/state}/iterm-utils-last-pull"
+
+  # Ensure bin_target is in PATH
+  if [[ ":$PATH:" != *":$bin_target:"* ]]; then
+    export PATH="$bin_target:$PATH"
+  fi
+
+  # First-time setup
+  if [[ ! -d "$checkout/.git" ]]; then
+    mkdir -p "$(dirname "$checkout")" "$(dirname "$bin_target")" "$(dirname "$stamp")" 2>/dev/null
+
+    git clone --depth 1 --filter=blob:none --sparse \
+      https://github.com/gnachman/iTerm2-shell-integration.git "$checkout" >/dev/null 2>&1 || return
+
+    (cd "$checkout" && git sparse-checkout set utilities) >/dev/null 2>&1
+    ln -sfn "$checkout/utilities" "$bin_target" 2>/dev/null
+  fi
+
+  # Daily update check
+  if [[ -d "$checkout/.git" ]]; then
+    if [[ ! -f "$stamp" ]] || find "$stamp" -mtime +1 | grep -q .; then
+      (cd "$checkout" && git pull --ff-only --quiet) >/dev/null 2>&1 && touch "$stamp" 2>/dev/null
+    fi
+  fi
+fi
+
+if [[ -r "${XDG_CONFIG_HOME}/iterm2/shell_integration.zsh" ]]; then
+  source "${XDG_CONFIG_HOME}/iterm2/shell_integration.zsh"
+fi
 
 # Load machine-local zshrc.
+
 [[ -f ~/.config/zsh/zshrc.local ]] && source ~/.config/zsh/zshrc.local
+
+# End ~/.config/zsh/zshrc
