@@ -109,6 +109,6 @@ set shiftwidth=2
 set textwidth=79
 
 set mouse=a
-set ttymouse=sgr
+if exists('+ttymouse') | set ttymouse=sgr | endif
 
 " End ~/.config/vim/vimrc
