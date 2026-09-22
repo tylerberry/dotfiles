@@ -101,6 +101,8 @@ set splitright
 set confirm
 set hidden
 
+set selection=exclusive
+
 set smartindent
 set autoindent
 set expandtab
@@ -110,5 +112,14 @@ set textwidth=79
 
 set mouse=a
 if exists('+ttymouse') | set ttymouse=sgr | endif
+
+" vim handling for clipboard paste via vim-oscyank if not natively available.
+
+if !has('nvim') && !has('clipboard_working')
+  nnoremap <expr> "+y OSC52ClipboardYankBegin()
+  xnoremap <expr> "+y OSC52ClipboardYankBegin()
+endif
+
+xmap <C-c> "+y
 
 " End ~/.config/vim/vimrc
