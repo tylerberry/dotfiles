@@ -8,6 +8,10 @@ if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Always use Emacs-style line editing.
+
+bindkey -e
+
 # Store history in the correct XDG location.
 
 if [[ ! -d "${XDG_STATE_HOME}/zsh" ]]; then
