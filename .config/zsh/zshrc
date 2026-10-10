@@ -62,9 +62,17 @@ source ${ZDOTDIR}/zim-ssh-agent.zsh
 alias ls='ls --color=auto'
 
 dotfiles() {
-    git --git-dir="${XDG_DATA_HOME}/dotfiles" --work-tree="${HOME}" "$@"
+  git --git-dir="${XDG_DATA_HOME}/dotfiles" --work-tree="${HOME}" "$@"
 }
 compdef dotfiles=git
+
+if command -v k9s >/dev/null 2>&1; then
+  k9s() {
+    local ns
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}')
+    command k9s -n "${ns:-default}" "$@"
+  }
+fi
 
 case "$OSTYPE" in
     darwin*)
