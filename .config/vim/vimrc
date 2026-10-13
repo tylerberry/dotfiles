@@ -113,7 +113,7 @@ set textwidth=79
 set mouse=a
 if exists('+ttymouse') | set ttymouse=sgr | endif
 
-" vim handling for clipboard paste via vim-oscyank if not natively available.
+" vim handling for clipboard copy via vim-oscyank if not natively available.
 
 if !has('nvim') && !has('clipboard_working')
   nnoremap <expr> "+y OSC52ClipboardYankBegin()
